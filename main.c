@@ -27,9 +27,9 @@ heap *MAKE_HEAP()
 node* allocateMemoryNode()
 {
     node* temp=(node* )malloc(sizeof(node));
-    t->degree=0;
-    t->parent=NULL;
-    t->child=NULL;
+    temp->degree=0;
+    temp->parent=NULL;
+    temp->child=NULL;
     return temp;
 }
 
