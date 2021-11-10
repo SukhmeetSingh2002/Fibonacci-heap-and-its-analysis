@@ -53,9 +53,9 @@ void fib_heap_insert(int key)
         else
         {
             newNode->right=fibHeap->min->right;
-            newNode->left=fibHeap;
+            newNode->left=fibHeap->min;
             fibHeap->min->right->left=newNode;
-            fibHeap->min->right=fibHeap;
+            fibHeap->min->right=newNode;
         }
         if(newNode->key<fibHeap->min->key)
             fibHeap->min=newNode;
