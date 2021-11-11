@@ -22,8 +22,12 @@ typedef struct heap
 
 heap *fibHeap;
 
-heap *MAKE_HEAP()
+heap *make_heap()
 {
+    heap* temp=(heap*)malloc(sizeof(heap));
+    temp->min=NULL;
+    temp->n=0;
+    return temp;
 }
 
 node *allocateMemoryNode()
@@ -62,6 +66,17 @@ void fib_heap_insert(int key)
     }
     fibHeap->n=fibHeap->n+1;
 }
+
+heap* fib_heap_union(heap*h1,heap*h2)
+{
+    heap*temp=make_heap();
+    temp->min=h1->min;
+    temp->n=h1->n+h2->n;
+    if (h1->min == NULL || (h2->min != NULL && (h2->min->key < h1->min->key)))
+        temp->min=h2->min;
+    return temp;
+}
+
 
 int main()
 {
