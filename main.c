@@ -89,6 +89,46 @@ void Fibonnaci_link(node* p2, node* p1)
     p1->degree+=1;
 }
 
+void Extract_min()
+{
+    if(fibHeap->min!=NULL)
+    {
+        node *temp=fibHeap->min;
+        node *ptr;
+        ptr=temp;
+        node *x=NULL;
+        if(temp->child!=NULL) 
+        {
+            x=temp->child;
+            do
+            {
+                ptr=x->right;
+                (fibHeap->min->left)->right=x;
+                x->right=fibHeap->min;
+                x->left=fibHeap->min->left;
+                fibHeap->min->left=x;
+                if( (x->key) < (fibHeap->min->key) )
+                {
+                    fibHeap->min=x;
+                }
+                x->parent=NULL;
+                x=ptr;
+            }while(ptr!=temp->child);
+        }
+        (temp->left)->right=temp->right;
+        (temp->right)->left=temp->left;
+        fibHeap->min=temp->right;
+        if(temp==temp->right && temp->child==NULL)
+            fibHeap->min=NULL;
+        else 
+        {
+            fibHeap->min=temp->right;
+            heap_consolidate();
+        }
+        fibHeap->n--;
+    }
+}
+
 int main()
 {
     fibHeap = (heap *)malloc(sizeof(heap));
