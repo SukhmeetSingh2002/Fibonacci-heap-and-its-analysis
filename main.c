@@ -77,6 +77,31 @@ heap* fib_heap_union(heap*h1,heap*h2)
     return temp;
 }
 
+void cut(heap* h,node* x,node* y){
+    if(y->child==x){
+        if(x->right==x)
+            y->child=NULL;
+        else
+            y->child=x->right;
+    }
+    if(y->child!=NULL){
+        x->right->left=x->left;
+        x->left->right=x->right;
+    }
+    insert(h,x);
+    x->parent=NULL;
+    x->mark=false;
+}
+
+void cascading_cut(heap* h,node* y){
+
+}
+
+void fib_heap_decrease_key(heap* h,node* x,int k){
+
+}
+
+
 
 int main()
 {
