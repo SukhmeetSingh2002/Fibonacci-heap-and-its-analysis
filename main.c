@@ -20,7 +20,7 @@ typedef struct heap
     int n;
 } heap;
 
-heap *fibHeap;
+// heap *fibHeap;
 
 heap *make_heap()
 {
@@ -40,30 +40,38 @@ node *allocateMemoryNode()
     return temp;
 }
 
-void fib_heap_insert(int key)
+void insert(heap* fibbHeap,node* newNode)
 {
-    node *newNode = allocateMemoryNode();
-    newNode->key = key;
-    if (fibHeap->min == NULL)
-        fibHeap->min = newNode;
+    if (fibbHeap->min == NULL)
+        fibbHeap->min = newNode;
     else
     {
-        if (fibHeap->min->right == NULL)
+        if (fibbHeap->min->right == fibbHeap->min)
         {
-            fibHeap->min->right = newNode;
-            newNode->left=fibHeap->min;
-            newNode->right=fibHeap->min;
+            fibbHeap->min->left=newNode;
+            fibbHeap->min->right = newNode;
+            newNode->left=fibbHeap->min;
+            newNode->right=fibbHeap->min;
         }
         else
         {
-            newNode->right=fibHeap->min->right;
-            newNode->left=fibHeap->min;
-            fibHeap->min->right->left=newNode;
-            fibHeap->min->right=newNode;
+            newNode->right=fibbHeap->min->right;
+            newNode->left=fibbHeap->min;
+            fibbHeap->min->right->left=newNode;
+            fibbHeap->min->right=newNode;
         }
-        if(newNode->key<fibHeap->min->key)
-            fibHeap->min=newNode;
+        if(newNode->key<fibbHeap->min->key)
+            fibbHeap->min=newNode;
     }
+}
+
+void fib_heap_insert(heap* fibHeap,int key)
+{
+    node *newNode = allocateMemoryNode();
+    newNode->key = key;
+    newNode->right=newNode;
+    newNode->left=newNode;
+    insert(fibHeap,newNode);
     fibHeap->n=fibHeap->n+1;
 }
 
@@ -105,5 +113,5 @@ void fib_heap_decrease_key(heap* h,node* x,int k){
 
 int main()
 {
-    fibHeap = (heap *)malloc(sizeof(heap));
+    // fibHeap = (heap *)malloc(sizeof(heap));
 }
