@@ -69,7 +69,7 @@ void Fibonnaci_link(node* p2, node* p1)
     (p2->right)->left=p2->left;
     if(p1->right==p1)
     {
-        fibHeap->mini=p1;
+        fibHeap->min=p1;
     }
     p2->left=p2;
     p2->right=p2;
