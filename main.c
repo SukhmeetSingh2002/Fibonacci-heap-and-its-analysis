@@ -110,6 +110,75 @@ void fib_heap_decrease_key(heap* h,node* x,int k){
 }
 
 
+void Fibonnaci_link(heap* fibHeap,node* p2, node* p1)
+{
+    (p2->left)->right=p2->right;
+    (p2->right)->left=p2->left;
+    if(p1->right==p1)
+    {
+        fibHeap->min=p1;
+    }
+    p2->left=p2;
+    p2->right=p2;
+    p2->parent=p1;
+    if(p1->child==NULL)
+    {
+        p1->child=p2;
+    }
+    else
+    {
+        p2->right=p1->child;
+        p2->left=(p1->child)->left;
+        ((p1->child)->left)->right=p2;
+        (p1->child)->left=p2;
+    }
+    if(p2->key<(p1->child)->key)
+    {
+        p1->child = p2;
+    }
+    p1->degree+=1;
+    p2->mark=false;
+}
+
+void Extract_min(heap* fibHeap)
+{
+    if(fibHeap->min!=NULL)
+    {
+        node *temp=fibHeap->min;
+        node *ptr;
+        ptr=temp;
+        node *x=NULL;
+        if(temp->child!=NULL) 
+        {
+            x=temp->child;
+            do
+            {
+                ptr=x->right;
+                (fibHeap->min->left)->right=x;
+                x->right=fibHeap->min;
+                x->left=fibHeap->min->left;
+                fibHeap->min->left=x;
+                if( (x->key) < (fibHeap->min->key) )
+                {
+                    fibHeap->min=x;
+                }
+                x->parent=NULL;
+                x=ptr;
+            }while(ptr!=temp->child);
+        }
+        (temp->left)->right=temp->right;
+        (temp->right)->left=temp->left;
+        fibHeap->min=temp->right;
+        if(temp==temp->right && temp->child==NULL)
+            fibHeap->min=NULL;
+        else 
+        {
+            fibHeap->min=temp->right;
+            heap_consolidate();
+        }
+        fibHeap->n--;
+    }
+}
 
 int main()
 {
