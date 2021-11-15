@@ -85,27 +85,40 @@ heap* fib_heap_union(heap*h1,heap*h2)
     return temp;
 }
 
-void cut(heap* h,node* x,node* y){
-    if(y->child==x){
-        if(x->right==x)
-            y->child=NULL;
+void cut(heap* h,node* child,node* parent){
+    if(parent->child==child){
+        if(child->right==child)
+            parent->child=NULL;
         else
-            y->child=x->right;
+            parent->child=child->right;
     }
-    if(y->child!=NULL){
-        x->right->left=x->left;
-        x->left->right=x->right;
+    if(parent->child!=NULL){
+        child->right->left=child->left;
+        child->left->right=child->right;
     }
-    insert(h,x);
-    x->parent=NULL;
-    x->mark=false;
+    insert(h,child);
+    child->parent=NULL;
+    child->mark=false;
+    parent->degree--;
 }
 
-void cascading_cut(heap* h,node* y){
-
+void cascading_cut(heap* fibHeap,node* y)
+{
+    node* parent=y->parent;
+    if(parent!=NULL)
+    {
+        if(y->mark==false)
+            y->mark=true;
+        else
+        {
+            cut(fibHeap,y,parent);
+            cascading_cut(fibHeap,parent);
+        }
+        
+    }
 }
 
-void fib_heap_decrease_key(heap* h,node* x,int k){
+void fib_heap_decrease_key(heap* fibHeap,node* oldNode,int newKey){
 
 }
 
