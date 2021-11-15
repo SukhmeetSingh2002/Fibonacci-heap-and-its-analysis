@@ -140,6 +140,19 @@ void Fibonnaci_link(heap* fibHeap,node* p2, node* p1)
     p2->mark=false;
 }
 
+int degree(heap*h){
+    int x=0;
+    node*temp=h->min;
+    node * temp2=h->min;
+    do{
+        if(x<temp->degree){
+            x=temp->degree;
+        }
+        temp=temp->right;
+    }while(temp2!=temp);
+    return x;
+}
+
 void heap_consolidate(heap* H){
     int k=degree(H);
     node** x;
