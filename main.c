@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
+#include <math.h>
 typedef struct node
 {
     int key;
@@ -153,6 +153,53 @@ void Fibonnaci_link(heap* fibHeap,node* p2, node* p1)
     p2->mark=false;
 }
 
+int degree(heap*h){
+    return (int)(log2(h->n))+1;
+}
+
+void heap_consolidate(heap* H){
+    int k=degree(H);
+    node** x;
+    x=(node**)malloc((k+1)*sizeof(node*));
+    for(int i=0;i<=k;i++){
+        x[i]=NULL;
+    }
+    node*temp=H->min;
+    node* temp1=temp;
+    do{
+        node* temp2=temp;
+        int d=temp2->degree;
+        while(x[d]!=NULL){
+            node*temp3=x[d];
+            if(temp2->key>temp3->key){
+                node* temp5=temp3;
+                temp3=temp2;
+                temp2=temp5;
+            }
+            Fibonnaci_link(H,temp3,temp2);
+            x[d]=NULL;
+            d++;
+        }
+        x[d]=temp2;
+        temp=temp->right;
+    }while(temp!=temp1);
+    H->min=NULL;
+    for(int i=0;i<=k;i++){
+        if(x[i]!=NULL){
+            if(H->min==NULL){
+                H->min=x[i];
+                x[i]->left=x[i];
+                x[i]->right=x[i];
+            }
+            else{
+                insert(H,x[i]);
+                if(x[i]->key<H->min->key)
+                    H->min=x[i];
+            }
+        }
+    }
+}
+
 void Extract_min(heap* fibHeap)
 {
     if(fibHeap->min!=NULL)
@@ -187,7 +234,7 @@ void Extract_min(heap* fibHeap)
         else 
         {
             fibHeap->min=temp->right;
-            heap_consolidate();
+            heap_consolidate(fibHeap);
         }
         fibHeap->n--;
     }
