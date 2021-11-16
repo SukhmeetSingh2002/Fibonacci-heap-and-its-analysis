@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
+#include <math.h>
+#define INT_MIN -50000
 typedef struct node
 {
     int key;
@@ -118,8 +119,31 @@ void cascading_cut(heap* fibHeap,node* y)
     }
 }
 
-void fib_heap_decrease_key(heap* fibHeap,node* oldNode,int newKey){
 
+void fib_heap_decrease_key(heap* fibHeap, node* oldNode, int newKey)
+{
+    if (fibHeap->min==NULL)
+    {
+        printf("\nHeap empty.");
+    }
+    else if(oldNode->key < newKey)
+    {
+        printf("\nThe new value is greater than the current value.");
+    }
+    else
+    {
+        oldNode->key=newKey;
+        node* temp=oldNode->parent;
+        if( temp!=NULL && ((oldNode->key)<(temp->key)) ) 
+        {
+            cut(fibHeap,oldNode,temp);
+            cascading_cut(fibHeap,temp);
+        }
+        if( oldNode->key < fibHeap->min->key )
+        {
+            fibHeap->min=oldNode;
+        }
+    }
 }
 
 
@@ -153,7 +177,54 @@ void Fibonnaci_link(heap* fibHeap,node* p2, node* p1)
     p2->mark=false;
 }
 
-void Extract_min(heap* fibHeap)
+int degree(heap*h){
+    return (int)(log2(h->n))+1;
+}
+
+void heap_consolidate(heap* H){
+    int k=degree(H);
+    node** x;
+    x=(node**)malloc((k+1)*sizeof(node*));
+    for(int i=0;i<=k;i++){
+        x[i]=NULL;
+    }
+    node*temp=H->min;
+    node* temp1=temp;
+    do{
+        node* temp2=temp;
+        int d=temp2->degree;
+        while(x[d]!=NULL){
+            node*temp3=x[d];
+            if(temp2->key>temp3->key){
+                node* temp5=temp3;
+                temp3=temp2;
+                temp2=temp5;
+            }
+            Fibonnaci_link(H,temp3,temp2);
+            x[d]=NULL;
+            d++;
+        }
+        x[d]=temp2;
+        temp=temp->right;
+    }while(temp!=temp1);
+    H->min=NULL;
+    for(int i=0;i<=k;i++){
+        if(x[i]!=NULL){
+            if(H->min==NULL){
+                H->min=x[i];
+                x[i]->left=x[i];
+                x[i]->right=x[i];
+            }
+            else{
+                insert(H,x[i]);
+                if(x[i]->key<H->min->key)
+                    H->min=x[i];
+            }
+        }
+    }
+}
+
+int Extract_min(heap* fibHeap)
 {
     if(fibHeap->min!=NULL)
     {
@@ -187,13 +258,116 @@ void Extract_min(heap* fibHeap)
         else 
         {
             fibHeap->min=temp->right;
-            heap_consolidate();
+            heap_consolidate(fibHeap);
         }
         fibHeap->n--;
+        return temp->key;
     }
 }
 
-int main()
-{
-    // fibHeap = (heap *)malloc(sizeof(heap));
+void fib_heap_delete(heap* h,node* key){
+    fib_heap_decrease_key(h,key,INT_MIN);
+    int temp=Extract_min(h);
+}
+
+node* node_search(heap* h,int key){
+    node* temp=NULL;
+    //Code to be written
+    return temp;
+}
+
+void print(node* n,char* s,int dep){
+    node*temp=n;
+    s[dep]='\\';
+    s[++dep]='\0';
+    do{
+        printf("%s         %d\n",s,temp->key);
+        print(temp,s,dep);
+        temp=temp->right;
+    }while(temp!=n);
+}
+
+int main(){
+    heap** fibheap;
+    printf("please enter number of fibonacci heaps you want to make: ");
+    int n;
+    scanf("%d",&n);
+    fibheap=(heap**)malloc(n*sizeof(heap*));
+    for(int i=0;i<n;i++)
+        fibheap[i]=make_heap();
+    printf("Heaps are made and referenced form 0 to %d \n",n-1);
+    int ref=-1;
+    do{
+        printf("Please enter heap reference number to continue operations\nenter -1 to exit");
+        printf("\nIn case of union please enter reference number in which you need to merge and save\n");
+        printf("Enter your choice: ");
+        scanf("%d",&ref);
+        int work = 7;
+        if(ref>=0 && ref<n){
+            do{
+                printf("PLease choose your choice\n");
+                printf("1: insert\n2: union\n3: extract minimum\n4:decrease key\n5:delete node\n6:print heap\n7: exit\nEnter your choice: ");
+                scanf("%d",&work);
+                if(work==1){
+                    int value;
+                    printf("Enter number to insert: ");
+                    scanf("%d",&value);
+                    fib_heap_insert(fibheap[ref],value);
+                }
+                else if(work==2){
+                    int value;
+                    printf("Enter second reference value to merge(Note: heap with current referene number exists as it was): ");
+                    scanf("%d",&value);
+                    fibheap[ref]=fib_heap_union(fibheap[ref],fibheap[value]);
+                }
+                else if(work==3 && fibheap[ref]->min!=NULL){
+                    int value=Extract_min(fibheap[ref]);
+                    printf("Minimum extracted is: %d \n",value);
+                }
+                else if(work==3 && fibheap[ref]->min==NULL){
+                    printf("Heap is empty\n");
+                }
+                else if(work==4){
+                    int key;
+                    printf("Enter key to decrease value of key: ");
+                    scanf("%d",&key);
+                    node*temp=node_search(fibheap[ref],key);
+                    if(temp==NULL)
+                        printf("Key not present\n");
+                    else{
+                        printf("Enter value of new key: ");
+                        scanf("%d",&key);
+                        fib_heap_decrease_key(fibheap[ref],temp,key);
+                        printf("Key value decreased");
+                    }
+                }
+                else if(work==5){
+                    printf("Enter key to delete node: ");
+                    int key;
+                    scanf("%d",&key);
+                    node*temp=node_search(fibheap[ref],key);
+                    if(temp==NULL){
+                        printf("Key not present\n");
+                    }
+                    else{
+                        fib_heap_delete(fibheap[ref],temp);
+                    }
+                }
+                else if(work==6){
+                    if(fibheap[ref]->min!=NULL){
+                        char s[100]="";
+                        print(fibheap[ref]->min,s,0);
+                    }
+                    else{
+                        printf("HEAP is empty");
+                    }
+                }
+                else{
+                    printf("Please Enter a valid entry\n");
+                    work=10;
+                }
+            }while(work!=7);
+        }
+    }while(ref!=-1);
+    printf("Successfully executed all operations.");
 }
