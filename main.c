@@ -124,18 +124,25 @@ void fib_heap_decrease_key(heap* fibHeap, node* oldNode, int newKey)
 {
     if (fibHeap->min==NULL)
     {
-        cout<<"\nThe Heap is Empty."<<endl;
+        printf("\nHeap empty.");
     }
-    oldNode->key=newKey;
-    node* temp=oldNode->parent;
-    if( temp!=NULL && ((oldNode->key)<(temp->key)) ) 
+    else if(oldNode->key < newKey)
     {
-        cut(fibHeap,oldNode,temp);
-        cascading_cut(fibHeap,temp);
+        printf("\nThe new value is greater than the current value.");
     }
-    if( oldNode->key < fibHeap->min->key )
+    else
     {
-        fibHeap->min=oldNode;
+        oldNode->key=newKey;
+        node* temp=oldNode->parent;
+        if( temp!=NULL && ((oldNode->key)<(temp->key)) ) 
+        {
+            cut(fibHeap,oldNode,temp);
+            cascading_cut(fibHeap,temp);
+        }
+        if( oldNode->key < fibHeap->min->key )
+        {
+            fibHeap->min=oldNode;
+        }
     }
 }
 
