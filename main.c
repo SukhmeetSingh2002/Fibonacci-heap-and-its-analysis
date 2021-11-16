@@ -119,8 +119,24 @@ void cascading_cut(heap* fibHeap,node* y)
     }
 }
 
-void fib_heap_decrease_key(heap* fibHeap,node* oldNode,int newKey){
 
+void fib_heap_decrease_key(heap* fibHeap, node* oldNode, int newKey)
+{
+    if (fibHeap->min==NULL)
+    {
+        cout<<"\nThe Heap is Empty."<<endl;
+    }
+    oldNode->key=newKey;
+    node* temp=oldNode->parent;
+    if( temp!=NULL && ((oldNode->key)<(temp->key)) ) 
+    {
+        cut(fibHeap,oldNode,temp);
+        cascading_cut(fibHeap,temp);
+    }
+    if( oldNode->key < fibHeap->min->key )
+    {
+        fibHeap->min=oldNode;
+    }
 }
 
 
