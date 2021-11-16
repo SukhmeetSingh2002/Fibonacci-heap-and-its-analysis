@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
+#include <math.h>
 typedef struct node
 {
     int key;
@@ -141,16 +141,7 @@ void Fibonnaci_link(heap* fibHeap,node* p2, node* p1)
 }
 
 int degree(heap*h){
-    int x=0;
-    node*temp=h->min;
-    node * temp2=h->min;
-    do{
-        if(x<temp->degree){
-            x=temp->degree;
-        }
-        temp=temp->right;
-    }while(temp2!=temp);
-    return x;
+    return (int)(log2(h->n))+1;
 }
 
 void heap_consolidate(heap* H){
