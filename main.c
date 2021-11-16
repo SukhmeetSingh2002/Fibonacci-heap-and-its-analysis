@@ -275,6 +275,7 @@ void print(node* n,char* s,int dep){
     s[++dep]='\0';
     do{
         printf("%s         %d\n",s,temp->key);
+        print(temp,s,dep);
         temp=temp->right;
     }while(temp!=n);
 }
