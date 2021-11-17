@@ -47,6 +47,19 @@ void builMinHeap(int *a,int *heapSize)
     
 }
 
+void decreaseKey(int i, int *a, int new_val)
+{
+    int temp;
+    a[i]=new_val;
+    while(i!=0 && a[parent(i)]>a[i])
+    {
+       temp=a[i];
+       a[i]=a[parent(i)];
+       a[parent(i)]=a[i];
+       i=parent(a, i);
+    }
+}
+
 int extractMin(int *a,int *heapSize)
 {
     int minElt;
