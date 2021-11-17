@@ -83,6 +83,13 @@ heap* fib_heap_union(heap*h1,heap*h2)
     heap*temp=make_heap();
     temp->min=h1->min;
     temp->n=h1->n+h2->n;
+    if(h1->min != NULL && h2->min != NULL){
+        node* temp1=h1->min->right;
+        node* temp2=h2->min->left;
+        h1->min->right=h2->min;
+        h2->min->left=h1->min;
+        temp1->left=temp2;
+        temp2->right=temp1;}
     if (h1->min == NULL || (h2->min != NULL && (h2->min->key < h1->min->key)))
         temp->min=h2->min;
     return temp;
@@ -302,7 +309,8 @@ void print(node* n,char* s,int dep){
     s[++dep]='\0';
     do{
         printf("%s         %d\n",s,temp->key);
-        print(temp,s,dep);
+        if(temp->child!=NULL)
+            print(temp->child,s,dep);
         temp=temp->right;
     }while(temp!=n);
 }
@@ -381,6 +389,9 @@ int main(){
                     else{
                         printf("HEAP is empty");
                     }
+                }
+                else if(work==7){
+                    printf("Exiting function\n");
                 }
                 else{
                     printf("Please Enter a valid entry\n");
