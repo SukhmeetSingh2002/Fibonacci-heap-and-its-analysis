@@ -210,6 +210,8 @@ void heap_consolidate(heap* H){
                 temp2=temp5;
             }
             Fibonnaci_link(H,temp3,temp2);
+            if(temp1==temp3)
+                temp1=temp2;
             x[d]=NULL;
             d++;
         }
