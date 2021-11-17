@@ -13,6 +13,7 @@ typedef struct node
     struct node *right;
     int degree;
     bool mark;
+    bool found;
 } node;
 
 typedef struct heap
@@ -38,6 +39,7 @@ node *allocateMemoryNode()
     temp->parent = NULL;
     temp->child = NULL;
     temp->mark = false;
+    temp->found=false;
     return temp;
 }
 
@@ -265,15 +267,33 @@ int Extract_min(heap* fibHeap)
     }
 }
 
-void fib_heap_delete(heap* h,node* key){
-    fib_heap_decrease_key(h,key,INT_MIN);
-    int temp=Extract_min(h);
+
+
+void search(heap* fibHeap,node* fibHeapNode,int value,int newKey,int *done)
+{
+    node *temp=fibHeapNode;
+    temp->found=true;
+    if(temp->key==value)
+    {
+        *done=1;
+        temp->found=false;
+        fib_heap_decrease_key(fibHeap,temp,newKey);
+        return;
+    }
+    else
+    {
+        if(temp->child!=NULL)
+            search(fibHeap,temp->child,value,newKey,done);
+        if(!temp->right->found)
+            search(fibHeap,temp->right,value,newKey,done);
+    }
+    temp->found=false;
+    
 }
 
-node* node_search(heap* h,int key){
-    node* temp=NULL;
-    //Code to be written
-    return temp;
+void fib_heap_delete(heap* h,int key,int *done){
+    search(h,h->min,key,INT_MIN,done);
+    int temp=Extract_min(h);
 }
 
 void print(node* n,char* s,int dep){
@@ -289,7 +309,7 @@ void print(node* n,char* s,int dep){
 
 int main(){
     heap** fibheap;
-    printf("please enter number of fibonacci heaps you want to make: ");
+    printf("Please enter number of fibonacci heaps you want to make: ");
     int n;
     scanf("%d",&n);
     fibheap=(heap**)malloc(n*sizeof(heap*));
@@ -298,7 +318,7 @@ int main(){
     printf("Heaps are made and referenced form 0 to %d \n",n-1);
     int ref=-1;
     do{
-        printf("Please enter heap reference number to continue operations\nenter -1 to exit");
+        printf("Please enter heap reference number to continue operations\nEnter -1 to exit");
         printf("\nIn case of union please enter reference number in which you need to merge and save\n");
         printf("Enter your choice: ");
         scanf("%d",&ref);
@@ -316,9 +336,10 @@ int main(){
                 }
                 else if(work==2){
                     int value;
-                    printf("Enter second reference value to merge(Note: heap with current referene number exists as it was): ");
+                    printf("Enter second reference value to merge(Note: heap with current referene number is %d): ",ref);
                     scanf("%d",&value);
                     fibheap[ref]=fib_heap_union(fibheap[ref],fibheap[value]);
+                    printf("Merged %d and %d into %d\n",ref,value,ref);
                 }
                 else if(work==3 && fibheap[ref]->min!=NULL){
                     int value=Extract_min(fibheap[ref]);
@@ -328,30 +349,29 @@ int main(){
                     printf("Heap is empty\n");
                 }
                 else if(work==4){
-                    int key;
-                    printf("Enter key to decrease value of key: ");
+                    int *done=0;
+                    int key,newKey;
+                    printf("Enter old value of key: ");
                     scanf("%d",&key);
-                    node*temp=node_search(fibheap[ref],key);
-                    if(temp==NULL)
+                    printf("Enter value of new key: ");
+                    scanf("%d",&newKey);
+
+                    search(fibheap[ref],fibheap[ref]->min,key,newKey,done);
+                    if(*done==1)
+                        printf("%d was decreased to %d",key,newKey);
+                    else
                         printf("Key not present\n");
-                    else{
-                        printf("Enter value of new key: ");
-                        scanf("%d",&key);
-                        fib_heap_decrease_key(fibheap[ref],temp,key);
-                        printf("Key value decreased");
-                    }
                 }
                 else if(work==5){
+                    int *done=0;
                     printf("Enter key to delete node: ");
                     int key;
                     scanf("%d",&key);
-                    node*temp=node_search(fibheap[ref],key);
-                    if(temp==NULL){
+                        fib_heap_delete(fibheap[ref],key,done);
+                    if(*done==1)
+                        printf("%d was deleted",key);
+                    else
                         printf("Key not present\n");
-                    }
-                    else{
-                        fib_heap_delete(fibheap[ref],temp);
-                    }
                 }
                 else if(work==6){
                     if(fibheap[ref]->min!=NULL){
