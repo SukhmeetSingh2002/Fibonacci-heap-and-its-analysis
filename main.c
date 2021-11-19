@@ -197,10 +197,9 @@ void heap_consolidate(heap* H){
     for(int i=0;i<=k;i++){
         x[i]=NULL;
     }
-    node*temp=H->min;
-    node* temp1=temp;
+    node*temp2=H->min;
+    node* temp1=temp2;
     do{
-        node* temp2=temp;
         int d=temp2->degree;
         while(x[d]!=NULL){
             node*temp3=x[d];
@@ -216,8 +215,8 @@ void heap_consolidate(heap* H){
             d++;
         }
         x[d]=temp2;
-        temp=temp->right;
-    }while(temp!=temp1);
+        temp2=temp2->right;
+    }while(temp2!=temp1);
     H->min=NULL;
     for(int i=0;i<=k;i++){
         if(x[i]!=NULL){
