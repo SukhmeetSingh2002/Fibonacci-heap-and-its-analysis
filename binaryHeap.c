@@ -5,28 +5,15 @@
 #define INT_MIN -50000
 
 
-int left(int *a,int i)
-{
-    return a[((2*(++i))-1)];    
-}
-int right(int *a,int i)
-{
-    return a[(((2*(++i))+1)-1)];
-}
-int parent(int *a,int i)
-{
-    return a[(((++i)/2)-1)];
-}
-
-int left_index(int i)
+int left(int*a,int i)
 {
     return ((2*(++i))-1);    
 }
-int right_index(int i)
+int right(int*a,int i)
 {
     return (((2*(++i))+1)-1);
 }
-int parent_index(int i)
+int parent(int*a,int i)
 {
     return (((++i)/2)-1);
 }
@@ -51,18 +38,19 @@ void minHeapyfy(int *a,int i,int *heapSize)
     }
 }
 
-void insertNode(int *a, int* n, int Key,int *size){
+void insertNode(int **a, int* n, int Key,int *size){
     *n = *n + 1;
-    if(*n>*size)
-        a=(int*)realloc(a,(*n)*sizeof(int));
-        *size=*size+1;
-    a[*n - 1] = Key;
-    minHeapyfy(a, *n-1, *n);
+    if(*n>*size){
+        *a=(int*)realloc(*a,(*n)*sizeof(int));
+        *size=*n;
+    }
+    (*a)[*n - 1] = Key;
+    minHeapyfy(*a, *n-1, n);
 }
 
 void builMinHeap(int *a,int *heapSize)
 {
-    for (int i = *heapSize; i >= 0; i--)
+    for (int i = *(heapSize)-1; i >= 0; i--)
     {
         minHeapyfy(a,i,heapSize);
     }
@@ -71,6 +59,7 @@ void builMinHeap(int *a,int *heapSize)
 
 void decreaseKey(int i, int *a, int new_val)
 {
+    printf("Decrease key entered");
     int temp;
     a[i]=new_val;
     while(i!=0 && a[parent(a,i)]>a[i])
@@ -85,7 +74,7 @@ void decreaseKey(int i, int *a, int new_val)
 int extractMin(int *a,int *heapSize)
 {
     int minElt;
-    if(*heapSize<0)
+    if(*heapSize<=0)
     {
         printf("Underflow\n");
     }
@@ -93,17 +82,17 @@ int extractMin(int *a,int *heapSize)
     {
         minElt=a[0];
         a[0]=a[*heapSize-1];
-        *heapSize--;
+        *heapSize=*heapSize-1;
         minHeapyfy(a,0,heapSize);
     }
     return minElt;
 }
 
-int * bin_union(int *a,int* b, int x, int y){
+int * bin_union(int *a,int* b, int x, int y,int* size){
     int *c = (int*)malloc((x+y)*sizeof(int));
     for(int i=0;i<x;i++)    c[i]=a[i];
     for(int i=0;i<y;i++)    c[i+x]=b[i];
-    builMinHeap(c,x+y);
+    *size=x+y;
     return c;
 }
 
@@ -114,9 +103,9 @@ int search(int *heap,int i,int n,int key){
     else if(heap[i]==key)
         return i;
     else{
-        i=search(heap,left_index(i),n,key);
-        if(i==-1)   i=search(heap,left_index(i),n,key);
-        return i;
+        int x=search(heap,left(heap,i),n,key);
+        if(x==-1)   x=search(heap,right(heap,i),n,key);
+        return x;
     }
 }
 
@@ -137,6 +126,7 @@ int main()
     for(int i=0;i<k;i++){
         heap[i]=NULL;
         n[i]=0;
+        size[i]=0;
     }
     printf("Heaps are made and referenced form 0 to %d \n",k-1);
     int ref=-1;
@@ -145,28 +135,30 @@ int main()
         printf("\nIn case of union please enter reference number in which you need to merge and save\n");
         printf("Enter your choice: ");
         scanf("%d",&ref);
-        int work = 7;
-        if(ref>=0 && ref<n){
+        int work = 8;
+        if(ref>=0 && ref<k){
             do{
                 printf("PLease choose your choice\n");
-                printf("1: insert\n2: union\n3: extract minimum\n4:decrease key\n5:delete node\n6:print heap\n7: exit\nEnter your choice: ");
+                printf("1: insert\n2: union\n3: extract minimum\n4:decrease key\n5:delete node\n6:print heap\n7: Enter list of numbers and make heap(Only for new heap)\n8: exit\nEnter your choice: ");
                 scanf("%d",&work);
                 if(work==1){
                     int value;
                     printf("Enter number to insert: ");
                     scanf("%d",&value);
-                    insertNode(heap[ref],n+ref,value,size+ref);
+                    insertNode(heap+ref,n+ref,value,size+ref);
                 }
                 else if(work==2){
                     int value;
                     printf("Enter second reference value to merge(Note: heap with current referene number exists as it was): ");
                     scanf("%d",&value);
-                    int*temp=bin_union(heap[ref],heap[value],n+ref,n+value);
+                    int*temp=bin_union(heap[ref],heap[value],*(n+ref),*(n+value),size+ref);
+                    free(heap[ref]);
                     heap[ref]=temp;
                     *(n+ref)=*(n+ref)+*(n+value);
+                    builMinHeap(heap[ref],n+ref);
                 }
                 else if(work==3 && heap[ref]!=NULL && *(n+ref)!=0){
-                    int value=Extract_min(heap[ref],n+ref);
+                    int value=extractMin(heap[ref],n+ref);
                     printf("Minimum extracted is: %d \n",value);
                 }
                 else if(work==3 && (heap[ref]==NULL || *(n+ref)==0)){
@@ -182,7 +174,7 @@ int main()
                     else{
                         printf("Enter value of new key: ");
                         scanf("%d",&key);
-                        fib_heap_decrease_key(index,heap[ref],key);
+                        decreaseKey(index,heap[ref],key);
                         printf("Key value decreased");
                     }
                 }
@@ -197,20 +189,38 @@ int main()
                     }
                 }
                 else if(work==6){
-                    if(*(n+ref)==0 ||*(n+ref)==-1)
+                    if(*(n+ref)==0)
                         printf("HEAP is empty");
-                    for(int i=0;i<*(n+ref);i++){
-                        printf("%d ,",heap[ref][i]);
+                    else{
+                        for(int i=0;i<*(n+ref);i++){
+                            printf("%d ,",heap[ref][i]);
+                        }
+                        printf("\n");
                     }
                 }
                 else if(work==7){
-                    work=7;
+                    if(heap[ref]!=NULL){
+                        printf("Heap is already present");
+                    }
+                    else{
+                        printf("Enter size of heap: ");
+                        scanf("%d",n+ref);
+                        *(size+ref)=*(n+ref);
+                        printf("Enter elements in heap with spaces seperating them: ");
+                        heap[ref]=(int*)malloc((*n)*sizeof(int));
+                        for(int i=0;i<(*(n+ref));i++)
+                            scanf("%d",heap[ref]+i);
+                        builMinHeap(heap[ref],n+ref);
+                    }
+                }
+                else if(work==8){
+                    work=8;
                 }
                 else{
                     printf("Please Enter a valid entry\n");
                     work=10;
                 }
-            }while(work!=7);
+            }while(work!=8);
         }
     }while(ref!=-1);
 
