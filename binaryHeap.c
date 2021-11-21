@@ -116,7 +116,7 @@ void delete_key(int*a,int index, int *n){
 
 int main()
 {
-    printf("please enter number of heaps you want to make: ");
+    printf("Please enter number of heaps you want to make:\n>>> ");
     int k;
     scanf("%d",&k);
     // allocating memory  
@@ -133,23 +133,23 @@ int main()
     do{
         printf("Please enter heap reference number to continue operations\nenter -1 to exit");
         printf("\nIn case of union please enter reference number in which you need to merge and save\n");
-        printf("Enter your choice: ");
+        printf("Enter your choice:\n>>> ");
         scanf("%d",&ref);
         int work = 8;
         if(ref>=0 && ref<k){
             do{
-                printf("PLease choose your choice\n");
-                printf("1: insert\n2: union\n3: extract minimum\n4:decrease key\n5:delete node\n6:print heap\n7: Enter list of numbers and make heap(Only for new heap)\n8: exit\nEnter your choice: ");
+                printf("\nPlease choose your choice\n");
+                printf("1: insert\n2: union\n3: extract minimum\n4: decrease key\n5: delete node\n6: print heap\n7: Enter list of numbers and make heap(Only for new heap)\n8: exit\nEnter your choice:\n>>> ");
                 scanf("%d",&work);
                 if(work==1){
                     int value;
-                    printf("Enter number to insert: ");
+                    printf("Enter number to insert: \n>>> ");
                     scanf("%d",&value);
                     insertNode(heap+ref,n+ref,value,size+ref);
                 }
                 else if(work==2){
                     int value;
-                    printf("Enter second reference value to merge(Note: heap with current referene number exists as it was): ");
+                    printf("Enter second reference value to merge(Note: heap with current referene number is %d):\n>>> ",ref);
                     scanf("%d",&value);
                     int*temp=bin_union(heap[ref],heap[value],*(n+ref),*(n+value),size+ref);
                     free(heap[ref]);
@@ -165,32 +165,34 @@ int main()
                     printf("Heap is empty\n");
                 }
                 else if(work==4){
-                    int key;
-                    printf("Enter key to decrease value of key: ");
+                    int key,newKey;
+                    printf("Enter key to decrease value of key:\n>>> ");
                     scanf("%d",&key);
                     int index=search(heap[ref],0,*(n+ref),key);
                     if(index==-1)
                         printf("Key not present\n");
                     else{
-                        printf("Enter value of new key: ");
-                        scanf("%d",&key);
-                        decreaseKey(index,heap[ref],key);
-                        printf("Key value decreased");
+                        printf("Enter value of new key:\n>>> ");
+                        scanf("%d",&newKey);
+                        decreaseKey(index,heap[ref],newKey);
+                        printf("%d was decreased to %d\n",key,newKey);
                     }
                 }
                 else if(work==5){
-                    printf("Enter key to delete node: ");
+                    printf("Enter key to delete node:\n>>> ");
                     int key;
+                    scanf("%d",&key);
                     int index=search(heap[ref],0,*(n+ref),key);
                     if(index==-1)
                         printf("Key not present\n");
                     else{
                         delete_key(heap[ref],index,n+ref);
+                        printf("%d was deleted\n",key);
                     }
                 }
                 else if(work==6){
                     if(*(n+ref)==0)
-                        printf("HEAP is empty");
+                        printf("HEAP is empty\n");
                     else{
                         for(int i=0;i<*(n+ref);i++){
                             printf("%d ,",heap[ref][i]);
@@ -200,13 +202,13 @@ int main()
                 }
                 else if(work==7){
                     if(heap[ref]!=NULL){
-                        printf("Heap is already present");
+                        printf("Heap is already present\n");
                     }
                     else{
-                        printf("Enter size of heap: ");
+                        printf("Enter size of heap:\n>>> ");
                         scanf("%d",n+ref);
                         *(size+ref)=*(n+ref);
-                        printf("Enter elements in heap with spaces seperating them: ");
+                        printf("Enter elements in heap with spaces seperating them or in new line:\n");
                         heap[ref]=(int*)malloc((*n)*sizeof(int));
                         for(int i=0;i<(*(n+ref));i++)
                             scanf("%d",heap[ref]+i);
