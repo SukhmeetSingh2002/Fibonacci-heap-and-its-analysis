@@ -6,6 +6,8 @@
 #define INT_MIN -50000
 #define INT_MAX 80000
 
+double time_spent=0;
+
 int left(int*a,int i)
 {
     return ((2*(++i))-1);    
@@ -118,8 +120,6 @@ void delete_key(int*a,int index, int *n){
 int main()
 {
     printf("please enter number of heaps you want to make: ");
-    double time_spent=0;
-    clock_t begin=clock();
     int k;
     scanf("%d",&k);
     // allocating memory  
@@ -148,20 +148,29 @@ int main()
                     int value;
                     printf("Enter number to insert: \n>>> ");
                     scanf("%d",&value);
+                    clock_t begin=clock();
                     insertNode(heap+ref,n+ref,value,size+ref);
+                    clock_t end=clock();
+                    time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
                 }
                 else if(work==2){
                     int value;
                     printf("Enter second reference value to merge(Note: heap with current referene number is %d):\n>>> ",ref);
                     scanf("%d",&value);
+                    clock_t begin=clock();
                     int*temp=bin_union(heap[ref],heap[value],*(n+ref),*(n+value),size+ref);
                     free(heap[ref]);
                     heap[ref]=temp;
                     *(n+ref)=*(n+ref)+*(n+value);
                     builMinHeap(heap[ref],n+ref);
+                    clock_t end=clock();
+                    time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
                 }
                 else if(work==3 && heap[ref]!=NULL && *(n+ref)!=0){
+                    clock_t begin=clock();
                     int value=extractMin(heap[ref],n+ref);
+                    clock_t end=clock();
+                    time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
                     printf("Minimum extracted is: %d \n",value);
                 }
                 else if(work==3 && (heap[ref]==NULL || *(n+ref)==0)){
@@ -177,7 +186,10 @@ int main()
                     else{
                         printf("Enter value of new key:\n>>> ");
                         scanf("%d",&newKey);
+                        clock_t begin=clock();
                         decreaseKey(index,heap[ref],newKey);
+                        clock_t end=clock();
+                        time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
                         printf("%d was decreased to %d\n",key,newKey);
                     }
                 }
@@ -189,7 +201,10 @@ int main()
                     if(index==-1)
                         printf("Key not present\n");
                     else{
+                        clock_t begin=clock();
                         delete_key(heap[ref],index,n+ref);
+                        clock_t end=clock();
+                        time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
                         printf("%d was deleted\n",key);
                     }
                 }
@@ -228,9 +243,6 @@ int main()
             }while(work!=8);
         }
     }while(ref!=-1);
-
-    clock_t end=clock();
-    time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
     printf("\n%f\n",time_spent);
     // freeing memory
     for(int i=0;i<k;i++){
