@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include<time.h>
 #define INT_MIN -50000
-
+#define INT_MAX 80000
 
 int left(int*a,int i)
 {
@@ -38,15 +39,6 @@ void minHeapyfy(int *a,int i,int *heapSize)
     }
 }
 
-void insertNode(int **a, int* n, int Key,int *size){
-    *n = *n + 1;
-    if(*n>*size){
-        *a=(int*)realloc(*a,(*n)*sizeof(int));
-        *size=*n;
-    }
-    (*a)[*n - 1] = Key;
-    minHeapyfy(*a, *n-1, n);
-}
 
 void builMinHeap(int *a,int *heapSize)
 {
@@ -59,17 +51,26 @@ void builMinHeap(int *a,int *heapSize)
 
 void decreaseKey(int i, int *a, int new_val)
 {
-    printf("Decrease key entered");
     int temp;
     a[i]=new_val;
     while(i!=0 && a[parent(a,i)]>a[i])
     {
        temp=a[i];
        a[i]=a[parent(a,i)];
-       a[parent(a,i)]=a[i];
+       a[parent(a,i)]=temp;
        i=parent(a, i);
     }
 }
+void insertNode(int **a, int* n, int Key,int *size){
+    *n = *n + 1;
+    if(*n>*size){
+        *a=(int*)realloc(*a,(*n)*sizeof(int));
+        *size=*n;
+    }
+    (*a)[*n - 1] = INT_MAX;
+    decreaseKey(*n - 1,*a,Key);
+}
+
 
 int extractMin(int *a,int *heapSize)
 {
@@ -116,7 +117,9 @@ void delete_key(int*a,int index, int *n){
 
 int main()
 {
-    printf("Please enter number of heaps you want to make:\n>>> ");
+    printf("please enter number of heaps you want to make: ");
+    double time_spent=0;
+    clock_t begin=clock();
     int k;
     scanf("%d",&k);
     // allocating memory  
@@ -226,7 +229,9 @@ int main()
         }
     }while(ref!=-1);
 
-
+    clock_t end=clock();
+    time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
+    printf("\n%f\n",time_spent);
     // freeing memory
     for(int i=0;i<k;i++){
         if(heap[i]!=NULL)   free(heap[i]);
