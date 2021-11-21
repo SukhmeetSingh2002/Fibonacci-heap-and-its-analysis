@@ -327,6 +327,10 @@ void print(node* n,char* s,int dep){
 }
 
 int main(){
+    // FILE *fileOut;
+    // FILE *fileIN;
+    // fileOut = freopen("output.txt", "w", stdout);
+    // fileIN = freopen("INSERT_UNION_FIB.txt", "r", stdin);
     heap** fibheap;
     printf("Please enter number of fibonacci heaps you want to make:\n>>> ");
     int n;
@@ -433,4 +437,8 @@ int main(){
     }while(ref!=-1);
     printf("\nSuccessfully executed all operations.\n");
     printf("%f",time_spent);
+    // printf("\nSuccessfully executed all operations.\n");
+    // fclose(fileOut);
+    // fclose(fileIN);
+    return 0;
 }

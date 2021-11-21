@@ -119,6 +119,10 @@ void delete_key(int*a,int index, int *n){
 
 int main()
 {
+    // FILE *fileOut;
+    // FILE *fileIN;
+    // fileOut = freopen("output.txt", "w", stdout);
+    // fileIN = freopen("INSERT_UNION_BINARY.txt", "r", stdin);
     printf("please enter number of heaps you want to make: ");
     int k;
     scanf("%d",&k);
@@ -257,5 +261,7 @@ int main()
     }
     free(heap);
     free(n);
+    // fclose(fileIN);
+    // fclose(fileOut);
     return 0;
 }
