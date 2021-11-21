@@ -3,7 +3,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include<time.h>
 #define INT_MIN -50000
+
+
+double time_spent=0;
 typedef struct node
 {
     int key;
@@ -285,7 +289,10 @@ void search(heap* fibHeap,node* fibHeapNode,int value,int newKey,int *done)
     {
         *done=1;
         temp->found=false;
+        clock_t begin=clock();
         fib_heap_decrease_key(fibHeap,temp,newKey);
+        clock_t end=clock();
+        time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
         return;
     }
     else
@@ -301,7 +308,10 @@ void search(heap* fibHeap,node* fibHeapNode,int value,int newKey,int *done)
 
 void fib_heap_delete(heap* h,int key,int *done){
     search(h,h->min,key,INT_MIN,done);
+    clock_t begin=clock();
     int temp=Extract_min(h);
+    clock_t end=clock();
+    time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
 }
 
 void print(node* n,char* s,int dep){
@@ -341,17 +351,26 @@ int main(){
                     int value;
                     printf("Enter number to insert: \n>>> ");
                     scanf("%d",&value);
+                    clock_t begin=clock();
                     fib_heap_insert(fibheap[ref],value);
+                    clock_t end=clock();
+                    time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
                 }
                 else if(work==2){
                     int value;
                     printf("Enter second reference value to merge(Note: heap with current referene number is %d):\n>>> ",ref);
                     scanf("%d",&value);
+                    clock_t begin=clock();
                     fibheap[ref]=fib_heap_union(fibheap[ref],fibheap[value]);
+                    clock_t end=clock();
+                    time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
                     printf("Merged %d and %d into %d\n",ref,value,ref);
                 }
                 else if(work==3 && fibheap[ref]->min!=NULL){
+                    clock_t begin=clock();
                     int value=Extract_min(fibheap[ref]);
+                    clock_t end=clock();
+                    time_spent+=(double)(end-begin)/CLOCKS_PER_SEC;
                     printf("Minimum extracted is: %d \n",value);
                 }
                 else if(work==3 && fibheap[ref]->min==NULL){
@@ -407,4 +426,5 @@ int main(){
         }
     }while(ref!=-1);
     printf("\nSuccessfully executed all operations.\n");
+    printf("%f",time_spent);
 }
