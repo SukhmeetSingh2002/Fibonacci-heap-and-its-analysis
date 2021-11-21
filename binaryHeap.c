@@ -138,11 +138,11 @@ int main()
         printf("\nIn case of union please enter reference number in which you need to merge and save\n");
         printf("Enter your choice:\n>>> ");
         scanf("%d",&ref);
-        int work = 8;
+        int work = 9;
         if(ref>=0 && ref<k){
             do{
                 printf("\nPlease choose your choice\n");
-                printf("1: insert\n2: union\n3: extract minimum\n4: decrease key\n5: delete node\n6: print heap\n7: Enter list of numbers and make heap(Only for new heap)\n8: exit\nEnter your choice:\n>>> ");
+                printf("1: insert\n2: union\n3: extract minimum\n4: decrease key\n5: delete node\n6: print heap\n7: Enter list of numbers and make heap(Only for new heap)\n8: Minimum\n9: exit\nEnter your choice:\n>>> ");
                 scanf("%d",&work);
                 if(work==1){
                     int value;
@@ -234,13 +234,20 @@ int main()
                     }
                 }
                 else if(work==8){
-                    work=8;
+                    if(*(n+ref)!=0)
+                        printf("Minimum element is %d\n",heap[ref][0]);
+                    else
+                        printf("Empty Heap");
+                }
+                else if(work==9){
+                    printf("Exiting function...\n");
+                    work=9;
                 }
                 else{
                     printf("Please Enter a valid entry\n");
                     work=10;
                 }
-            }while(work!=8);
+            }while(work!=9);
         }
     }while(ref!=-1);
     printf("\n%f\n",time_spent);

@@ -341,11 +341,11 @@ int main(){
         printf("\nIn case of union please enter reference number in which you need to merge and save\n");
         printf("Enter your choice:\n>>> ");
         scanf("%d",&ref);
-        int work = 7;
+        int work = 8;
         if(ref>=0 && ref<n){
             do{
                 printf("\nPLease choose your choice\n");
-                printf("\n1: insert\n2: union\n3: extract minimum\n4: decrease key\n5: delete node\n6: print heap\n7: exit\nEnter your choice:\n>>> ");
+                printf("\n1: insert\n2: union\n3: extract minimum\n4: decrease key\n5: delete node\n6: print heap\n7: Minimum\n8: exit\nEnter your choice:\n>>> ");
                 scanf("%d",&work);
                 if(work==1){
                     int value;
@@ -416,13 +416,19 @@ int main(){
                     }
                 }
                 else if(work==7){
+                    if(fibheap[ref]->n!=0)
+                        printf("Minimum element is %d\n",fibheap[ref]->min->key);
+                    else
+                        printf("Empty Heap");
+                }
+                else if(work==8){
                     printf("Exiting function...\n");
                 }
                 else{
                     printf("Please Enter a valid entry\n");
                     work=10;
                 }
-            }while(work!=7);
+            }while(work!=8);
         }
     }while(ref!=-1);
     printf("\nSuccessfully executed all operations.\n");
