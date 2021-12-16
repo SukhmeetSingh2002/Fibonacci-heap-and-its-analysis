@@ -436,8 +436,7 @@ int main(){
         }
     }while(ref!=-1);
     printf("\nSuccessfully executed all operations.\n");
-    printf("%f",time_spent);
-    // printf("\nSuccessfully executed all operations.\n");
+    printf("Total time spent : %f\n",time_spent);
     // fclose(fileOut);
     // fclose(fileIN);
     return 0;

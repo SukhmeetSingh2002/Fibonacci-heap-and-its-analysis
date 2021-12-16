@@ -254,7 +254,7 @@ int main()
             }while(work!=9);
         }
     }while(ref!=-1);
-    printf("\n%f\n",time_spent);
+    printf("Total time spent : %f\n",time_spent);
     // freeing memory
     for(int i=0;i<k;i++){
         if(heap[i]!=NULL)   free(heap[i]);
